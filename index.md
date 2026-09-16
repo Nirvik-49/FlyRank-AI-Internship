@@ -13,6 +13,7 @@
 
 Is there a way of accurately predicting which of the web pages with many impressions and poor performance could get the most clicks if they were refreshed? This investigation used DuckDB and a data snapshot with 120,223 content pages taken from the FlyRank ML Internship warehouse dataset. We have consolidated the Search Console metrics for 90 days and metadata about the content. Then we fitted a gradient-boosted decision tree classifier against a benchmark historical rule that identifies pages simply based on a very low CTR. The resulting model showed an ROC-AUC of 0.814, which is a relatively 25% increase compared to the baseline's 0.651 AUC on a group stratified client holdout split. This technique will give an automatically ranked list of content refresh activities with the explanations that will allow FlyRank editorial teams to focus on the highest-yield content revisions.
 
+
 ## **1. Problem framing**
 
 ---
@@ -23,6 +24,7 @@ Is there a way of accurately predicting which of the web pages with many impress
 - **Cost of Wrong Call**: The waste of editor man-hours due to false alarm situations that lead to the tagging and revision of content which might have been already fine or is affected by off-siteseasonality; and missed out high-opportunity organic traffic in the false negatives not appearing on pages 1-2.
 - **Why Data/ML Helps**: A detailed assessment of 10,000 manual pages is not a feasible task, while a deep learning model can capture the complex relationships among average page rank, impression spread, query diversity, and click-through ratio fluctuation.
 
+
 ## 2. Data safety
 
 ---
@@ -30,6 +32,7 @@ Is there a way of accurately predicting which of the web pages with many impress
 - **Tables Used**: fact_daily_sample (Search Console daily aggregates), dim_content (page metadata), and fact_query_90d (query-level distributions).
 - **Features and Column Drops & Possible Leakage**: Extremely careful with the data leakage issues, and the only thing done was to remove the direct trend labels (trend_direction, trend_pct) and the future performance windows. The client identifiers (client_hash_id) were used only for splitting the group and were Later removed before model training.
 - **Data Privacy**: Raw query strings, client names, domain names, target URLs, and user credentials have all been hashed or omitted. No claims about Google's internal algorithm or the refresh causal effect.
+
 
 ## 3. Baseline
 
@@ -40,6 +43,7 @@ Is there a way of accurately predicting which of the web pages with many impress
     - **Baseline Precision@Top-100**: 52.0%
     - **Baseline ROC-AUC**: 0.651
     - **Baseline Base Rate (Target Class)**: 18.4%
+
 
 ## 4. Model / analysis
 
@@ -54,6 +58,7 @@ Is there a way of accurately predicting which of the web pages with many impress
     - **query_count**: Total distinct queries driving impressions to the page.
     - **top_query_share**: Impression concentration ratio of the primary search query.
 - **Features Excluded**: Target leakage indicators (trend_pct), pseudonymous IDs (content_hash_id, client_hash_id), and unaggregated raw timestamps.
+
 
 ## 5. Evaluation
 
@@ -73,6 +78,7 @@ Is there a way of accurately predicting which of the web pages with many impress
 
 * **Error Analysis:** Most false positives occur on broad informational head-terms with high impressions and naturally lower CTR. False negatives occur on niche long-tail pages with low impressions but high conversion intent.
 
+
 ## 6. Interpretation
 
 ---
@@ -84,6 +90,7 @@ Is there a way of accurately predicting which of the web pages with many impress
     4. **mean_position** (12.4% gain): Filters for striking-distance rankings (positions 4–15).
 - **Surprises & Negative Results**: Found that page-level metadata (title/description character count) only has very little contribution (≤ 1.2% gain). It means that search intent alignment dominates simple character length heuristics.
 
+
 ## **7. Recommendation**
 
 ---
@@ -93,6 +100,7 @@ Is there a way of accurately predicting which of the web pages with many impress
     2. **Tier 2 (Score 0.65–0.85; Reason: Striking Distance Decay)**: Update body copy, re-verify factual freshness, and expand internal linking to push position 6–12 rankings into top 3.
     3. **Tier 3 (Score < 0.65)**: Monitor; no immediate editorial intervention required.
 - **Confidence & Limits**: Work provides directional decision support for prioritizing editorial queue allocation. It does not guarantee causal ranking improvements or predict search engine algorithmic shifts.
+
 
 ## 8. Reproducibility
 
