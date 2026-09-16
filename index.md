@@ -4,7 +4,7 @@
 
 - **Author:** Nirvik K.C. (FlyRank ML Intern)
 - **Lane:** Refresh / Content Opportunity Scoring
-- **Repo:** https://github.com/Nirvik-49/Week-1-FlyRank-AI-Assignment
+- **Repo:** https://github.com/Nirvik-49/FlyRank-AI-Internship
 - **Date:** August 31, 2026
 
 ## **0. Abstract**
